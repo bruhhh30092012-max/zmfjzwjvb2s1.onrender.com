@@ -146,6 +146,7 @@ if (isset($_GET['view'])) {
         }
     }
 }
+?>
 <!doctype html>
 <html lang="vi">
 <head>
@@ -189,4 +190,5 @@ if (isset($_GET['view'])) {
     </table>
 </body>
 </html>
+
 
