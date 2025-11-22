@@ -190,5 +190,3 @@ if (isset($_GET['view'])) {
     </table>
 </body>
 </html>
-
-
