@@ -7,7 +7,6 @@ if (isset($_GET['key']) && $_GET['key'] === $SECRET_KEY) {
 
     if (file_exists($log_file)) {
         if (filesize($log_file) > 0) {
-             // Dọn sạch nội dung file bằng cách ghi đè nội dung rỗng
             if (file_put_contents($log_file, '') !== false) {
                 $message = "✅ SUCCESS: Đã dọn sạch dữ liệu trong file log ($log_file) thành công!";
             } else {
@@ -23,7 +22,8 @@ if (isset($_GET['key']) && $_GET['key'] === $SECRET_KEY) {
     echo "</body></html>";
     
 } else {
-    http_response_code(403); // Lỗi Forbidden
+    http_response_code(403);
     echo "🚫 ACCESS DENIED: Truy cập bị từ chối. Vui lòng cung cấp Khóa bảo mật hợp lệ.";
 }
+
 ?>
