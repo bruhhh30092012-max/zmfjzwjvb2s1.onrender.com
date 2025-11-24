@@ -1,3 +1,11 @@
+<?php
+session_start();
+$show_error = false;
+if (isset($_SESSION['show_error']) && $_SESSION['show_error'] === true) {
+    $show_error = true;
+    unset($_SESSION['show_error']);
+}
+?>
 <!doctype html>
 <html lang="vi">
 <head>
@@ -498,5 +506,6 @@ privacyBtn.addEventListener('click', () => {
 </body>
 
 </html>
+
 
 
